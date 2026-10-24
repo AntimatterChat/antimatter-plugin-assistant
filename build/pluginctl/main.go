@@ -110,14 +110,17 @@ func getClient(ctx context.Context) (*model.Client4, error) {
 	client = model.NewAPIv4Client(siteURL)
 
 	if adminToken != "" {
-		log.Printf("Authenticating using token against %q.", siteURL)
+		// %q quotes and escapes control characters, but gosec's taint tracker flags any logged value that
+		// reaches here from an environment variable regardless of verb; siteURL is the operator's own
+		// AM_SERVICESETTINGS_SITEURL, set locally for a deploy, not attacker-controlled input.
+		log.Printf("Authenticating using token against %q.", siteURL) //nolint:gosec
 		client.SetToken(adminToken)
 		return client, nil
 	}
 
 	if adminUsername != "" && adminPassword != "" {
 		client := model.NewAPIv4Client(siteURL)
-		log.Printf("Authenticating as %q against %q.", adminUsername, siteURL)
+		log.Printf("Authenticating as %q against %q.", adminUsername, siteURL) //nolint:gosec
 		_, _, err := client.Login(ctx, adminUsername, adminPassword)
 		if err != nil {
 			return nil, fmt.Errorf("failed to login as %s: %w", adminUsername, err)
