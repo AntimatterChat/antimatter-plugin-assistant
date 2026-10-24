@@ -49,10 +49,10 @@ export function badgeText(count: number): string {
 // notifies, takes focus or plays a sound; the count is purely visual, from assistant_card_added events kept
 // client-side (see reducer.ts's unreadCount).
 //
-// The mark itself is a small original butler figure (head, shoulders, bow tie) in Fusion's own icon line style
-// (see webapp/fusion/src/fusion/components/icon/icon_sprite.tsx: viewBox 0 0 24 24, round caps and joins,
-// currentColor so it themes); the same shape is used for assets/icon.svg. It is not a likeness of any existing
-// character.
+// The mark is a concierge's service bell with a small sparkle ("ring and it's taken care of"), chosen by the owner
+// over a butler figure and a bow tie. It is drawn in Fusion's own icon line style (see
+// webapp/fusion/src/fusion/components/icon/icon_sprite.tsx: viewBox 0 0 24 24, round caps and joins, currentColor so
+// it themes); the same shape is used for assets/icon.svg.
 export default function AssistantRailIcon() {
     const {formatMessage} = useIntl();
     const count = useSelector((state: GlobalState) => getUnreadCount(state));
@@ -69,17 +69,16 @@ export default function AssistantRailIcon() {
                 viewBox='0 0 24 24'
                 fill='none'
                 stroke='currentColor'
-                strokeWidth={2}
+                strokeWidth={1.8}
                 strokeLinecap='round'
                 strokeLinejoin='round'
                 aria-hidden='true'
             >
-                <circle
-                    cx='12'
-                    cy='6.5'
-                    r='2.8'
-                />
-                <path d='M4 20a8 8 0 0 1 16 0M8.8 12.1l3.2 1.4-3.2 1.4M15.2 12.1l-3.2 1.4 3.2 1.4'/>
+                <path d='M4.5 17.5a7.5 7.5 0 0 1 15 0'/>
+                <path d='M3 17.5h18M4.5 20.5h15'/>
+                <path d='M12 10V8.3M10.4 8.3h3.2'/>
+                <path d='M7.9 15.4a4.6 4.6 0 0 1 2.5-2.7'/>
+                <path d='M19.2 3.2v2.6M17.9 4.5h2.6'/>
             </svg>
             {count > 0 && (
                 <Badge aria-hidden='true'>{badgeText(count)}</Badge>
