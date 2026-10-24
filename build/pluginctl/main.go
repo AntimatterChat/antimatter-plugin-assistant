@@ -110,14 +110,14 @@ func getClient(ctx context.Context) (*model.Client4, error) {
 	client = model.NewAPIv4Client(siteURL)
 
 	if adminToken != "" {
-		log.Printf("Authenticating using token against %s.", siteURL)
+		log.Printf("Authenticating using token against %q.", siteURL)
 		client.SetToken(adminToken)
 		return client, nil
 	}
 
 	if adminUsername != "" && adminPassword != "" {
 		client := model.NewAPIv4Client(siteURL)
-		log.Printf("Authenticating as %s against %s.", adminUsername, siteURL)
+		log.Printf("Authenticating as %q against %q.", adminUsername, siteURL)
 		_, _, err := client.Login(ctx, adminUsername, adminPassword)
 		if err != nil {
 			return nil, fmt.Errorf("failed to login as %s: %w", adminUsername, err)
