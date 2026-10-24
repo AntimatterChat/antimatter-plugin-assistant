@@ -1,7 +1,7 @@
 // Copyright (c) 2026-present Antimatter contributors.
 // See LICENSE.txt for license information.
 
-import {fireEvent, render, screen} from '@testing-library/react';
+import {fireEvent, render, screen, waitFor} from '@testing-library/react';
 import React from 'react';
 import {IntlProvider} from 'react-intl';
 import {Provider} from 'react-redux';
@@ -94,7 +94,7 @@ describe('ActionCard', () => {
         expect(run).toBeInTheDocument();
         fireEvent.click(run);
 
-        expect(mockedClient.runAssistantCard).toHaveBeenCalledWith('channel1', 'card1');
+        await waitFor(() => expect(mockedClient.runAssistantCard).toHaveBeenCalledWith('channel1', 'card1'));
     });
 
     it('shows "Offered to <name>" when it\'s someone else\'s, without a Run button', () => {

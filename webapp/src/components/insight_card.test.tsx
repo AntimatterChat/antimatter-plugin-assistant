@@ -1,7 +1,7 @@
 // Copyright (c) 2026-present Antimatter contributors.
 // See LICENSE.txt for license information.
 
-import {fireEvent, render, screen} from '@testing-library/react';
+import {fireEvent, render, screen, waitFor} from '@testing-library/react';
 import React from 'react';
 import {IntlProvider} from 'react-intl';
 import {Provider} from 'react-redux';
@@ -93,7 +93,7 @@ describe('InsightCard', () => {
 
         fireEvent.click(screen.getByText('Post anyway'));
 
-        expect(mockedClient.postAssistantCard).toHaveBeenCalledWith('channel1', 'card1');
+        await waitFor(() => expect(mockedClient.postAssistantCard).toHaveBeenCalledWith('channel1', 'card1'));
     });
 
     it('cancelling the warning posts nothing', () => {
