@@ -45,9 +45,14 @@ export function badgeText(count: number): string {
 }
 
 // AssistantRailIcon is the app rail's icon (registered as a channel header button, which Fusion also draws in its
-// app rail): a quiet sparkline mark, with a small count of cards added since the panel was last opened. It never
+// app rail and panel header), with a small count of cards added since the panel was last opened. It never
 // notifies, takes focus or plays a sound; the count is purely visual, from assistant_card_added events kept
 // client-side (see reducer.ts's unreadCount).
+//
+// The mark itself is a small original butler figure (head, shoulders, bow tie) in Fusion's own icon line style
+// (see webapp/fusion/src/fusion/components/icon/icon_sprite.tsx: viewBox 0 0 24 24, round caps and joins,
+// currentColor so it themes); the same shape is used for assets/icon.svg. It is not a likeness of any existing
+// character.
 export default function AssistantRailIcon() {
     const {formatMessage} = useIntl();
     const count = useSelector((state: GlobalState) => getUnreadCount(state));
@@ -69,7 +74,12 @@ export default function AssistantRailIcon() {
                 strokeLinejoin='round'
                 aria-hidden='true'
             >
-                <path d='M3 12h4l2 7 4-14 2 7h6'/>
+                <circle
+                    cx='12'
+                    cy='6.5'
+                    r='2.8'
+                />
+                <path d='M4 20a8 8 0 0 1 16 0M8.8 12.1l3.2 1.4-3.2 1.4M15.2 12.1l-3.2 1.4 3.2 1.4'/>
             </svg>
             {count > 0 && (
                 <Badge aria-hidden='true'>{badgeText(count)}</Badge>
