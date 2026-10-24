@@ -1,0 +1,12 @@
+{
+    "id": "com.antimatterchat.assistant",
+    "name": "Assistant",
+    "description": "A proactive assistant that follows the conversation you're viewing and surfaces what's relevant, without being asked.",
+    "homepage_url": "https://github.com/antimatterchat/antimatter-plugin-assistant",
+    "support_url": "https://github.com/antimatterchat/antimatter-plugin-assistant/issues",
+    "icon_path": "assets/icon.svg",
+    "min_server_version": "12.0.0",
+    "webapp": {
+        "bundle_path": "webapp/dist/main.js"
+    }
+}
