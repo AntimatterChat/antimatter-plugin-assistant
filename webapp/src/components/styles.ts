@@ -1,7 +1,7 @@
 // Copyright (c) 2026-present Antimatter contributors.
 // See LICENSE.txt for license information.
 
-import styled from 'styled-components';
+import styled, {css} from 'styled-components';
 
 // Fusion's tokens (--am-*), which follow the theme (light, dark, OLED), with the classic web app's colours as a
 // fallback where Fusion isn't running. The same pattern the AI chat app's panel uses.
@@ -19,12 +19,15 @@ export const t = {
     accentSoft: 'var(--am-matter-soft, rgba(var(--button-bg-rgb), 0.12))',
     danger: 'var(--am-danger, var(--error-text))',
     dangerSoft: 'var(--am-danger-soft, rgba(var(--error-text-color-rgb, 218, 53, 69), 0.12))',
+    ok: 'var(--am-ok, var(--online-indicator, #3DB887))',
+    away: 'var(--am-away, var(--away-indicator, #FFBC1F))',
     shadow: 'var(--am-shadow, 0 8px 24px rgba(0, 0, 0, 0.16))',
     fontUI: 'var(--am-font-ui, inherit)',
     fontDisplay: 'var(--am-font-display, inherit)',
 };
 
 export const Panel = styled.div`
+    position: relative;
     display: flex;
     flex-direction: column;
     flex: 1;
@@ -108,10 +111,30 @@ export const Card = styled.div`
     background: ${t.raise};
 `;
 
+export const CardTitleRow = styled.div`
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    min-width: 0;
+`;
+
 export const CardTitle = styled.div`
     font: 600 14px/19px ${t.fontDisplay};
     color: ${t.text};
     overflow-wrap: anywhere;
+`;
+
+// PinMark is the small, stable mark on a pinned card: pinned cards stay in their chronological place in the feed
+// rather than jumping to the top, so this is the only way to tell one apart.
+export const PinMark = styled.span`
+    flex: none;
+    padding: 1px 6px;
+    border-radius: 999px;
+    background: ${t.accentSoft};
+    color: ${t.accent};
+    font: 700 10px/14px ${t.fontUI};
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
 `;
 
 export const CardSummary = styled.p`
@@ -245,6 +268,131 @@ export const ToolChip = styled.span`
     font-size: 12px;
     color: ${t.text2};
     background: ${t.raise2};
+`;
+
+// AttachmentGroup wraps a card's attachments (see attachment_card.tsx): a landmark screen readers can announce
+// with the result's one-line summary, even when its content is a chart rather than text.
+export const AttachmentGroup = styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+`;
+
+export const AttachmentBox = styled.div<{$color: string}>`
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 8px 10px 8px 12px;
+    border-radius: 8px;
+    background: ${t.raise2};
+    box-shadow: inset 3px 0 0 ${({$color}) => $color};
+`;
+
+export const AttachmentAuthor = styled.div`
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font: 600 12.5px/16px ${t.fontUI};
+    color: ${t.text2};
+`;
+
+export const AttachmentIcon = styled.img`
+    width: 16px;
+    height: 16px;
+    border-radius: 3px;
+`;
+
+const attachmentTitleCss = css`
+    font: 700 14px/19px ${t.fontDisplay};
+    overflow-wrap: anywhere;
+`;
+
+export const AttachmentTitleLink = styled.a`
+    ${attachmentTitleCss}
+    color: ${t.accent};
+    text-decoration: none;
+
+    &:hover, &:focus-visible {
+        text-decoration: underline;
+    }
+`;
+
+export const AttachmentTitlePlain = styled.span`
+    ${attachmentTitleCss}
+    color: ${t.text};
+`;
+
+export const AttachmentText = styled.p`
+    margin: 0;
+    font-size: 13px;
+    line-height: 18px;
+    color: ${t.text};
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+`;
+
+export const FieldsGrid = styled.dl`
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 4px 12px;
+    margin: 0;
+
+    dt {
+        font-size: 11px;
+        font-weight: 700;
+        color: ${t.faint};
+    }
+
+    dd {
+        margin: 0;
+        font-size: 13px;
+        color: ${t.text2};
+        overflow-wrap: anywhere;
+    }
+`;
+
+export const FieldItem = styled.div<{$wide?: boolean}>`
+    min-width: 0;
+    grid-column: ${({$wide}) => ($wide ? '1 / -1' : 'auto')};
+`;
+
+export const AttachmentFoot = styled.div`
+    font-size: 11px;
+    color: ${t.faint};
+`;
+
+export const AttachmentChartSvg = styled.svg`
+    width: 100%;
+    height: 56px;
+    border-radius: 6px;
+    background: ${t.main};
+`;
+
+export const NewCardChipWrap = styled.div`
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 10px;
+    display: flex;
+    justify-content: center;
+    pointer-events: none;
+`;
+
+export const NewCardChip = styled.button`
+    pointer-events: auto;
+    padding: 6px 14px;
+    border: 1px solid ${t.line};
+    border-radius: 999px;
+    background: ${t.main};
+    box-shadow: ${t.shadow};
+    color: ${t.accent};
+    font: 700 12px/16px ${t.fontUI};
+    cursor: pointer;
+
+    &:focus-visible {
+        outline: 2px solid ${t.accent};
+        outline-offset: 1px;
+    }
 `;
 
 export const IconButton = styled.button`

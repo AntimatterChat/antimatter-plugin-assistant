@@ -38,7 +38,7 @@ export function followingSet(channelId: string, following: boolean): AnyAction {
     return {type: FOLLOWING_SET, data: {channelId, following}};
 }
 
-// loadFeed fetches a channel's feed: the person's cards there, pinned first then newest.
+// loadFeed fetches a channel's feed: the person's cards there, oldest first like a chat.
 export async function loadFeed(store: Store, channelId: string): Promise<void> {
     try {
         const feed = await client.getAssistantFeed(channelId);

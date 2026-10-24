@@ -24,7 +24,8 @@ export type ChannelFeedState = {
     loaded: boolean;
     cardsById: Record<string, AssistantCard>;
 
-    // Pinned cards first, then the newest, as the server orders the feed.
+    // Oldest first, newest last, like a chat. Pinned cards keep their place in that order; they're told apart
+    // only by their pin mark (see styles.ts's PinMark), never by moving to the top.
     order: string[];
 };
 
@@ -48,16 +49,12 @@ const emptyChannel: ChannelFeedState = {
     order: [],
 };
 
-// sortedOrder orders a channel's cards the way the server's feed does: pinned first, then the newest.
+// sortedOrder orders a channel's cards like a chat: oldest first, newest last. Pinned cards stay exactly where
+// their create_at puts them (see ChannelFeedState.order above); nothing here reorders them to the top.
 function sortedOrder(cardsById: Record<string, AssistantCard>): string[] {
     return Object.values(cardsById).
         filter((card) => card.status !== 'dismissed').
-        sort((a, b) => {
-            if (a.pinned !== b.pinned) {
-                return a.pinned ? -1 : 1;
-            }
-            return b.create_at - a.create_at;
-        }).
+        sort((a, b) => a.create_at - b.create_at).
         map((card) => card.id);
 }
 

@@ -9,7 +9,7 @@ import {useDisplayName} from '../hooks/use_display_name';
 import type {AssistantCard} from '../types/assistant';
 
 import {messages} from './messages';
-import {Button, ButtonRow, Card, CardTitle, Note, ParamsList} from './styles';
+import {Button, ButtonRow, Card, CardTitle, CardTitleRow, Note, ParamsList, PinMark} from './styles';
 import WhyRow from './why_row';
 
 function Parameters({args}: {args: Record<string, unknown>}) {
@@ -83,7 +83,10 @@ export default function ActionCard({card, store}: {card: AssistantCard; store: S
 
     return (
         <Card>
-            <CardTitle>{card.tool_title}</CardTitle>
+            <CardTitleRow>
+                <CardTitle>{card.tool_title}</CardTitle>
+                {card.pinned && <PinMark>{formatMessage(messages.pinned)}</PinMark>}
+            </CardTitleRow>
             <Parameters args={card.arguments}/>
             <WhyRow
                 why={card.why}

@@ -114,6 +114,11 @@ describe('ActionCard', () => {
         expect(mockedClient.claimAssistantCard).toHaveBeenCalledWith('channel1', 'card1');
     });
 
+    it('shows a pin mark on a pinned action card', () => {
+        renderCard(makeCard({pinned: true}), makeStore());
+        expect(screen.getByText('Pinned')).toBeInTheDocument();
+    });
+
     it('shows the recorded note once the offer is done, matching the executed: false stub', () => {
         const offer = {id: 'offer1', status: 'done' as const, holder_id: 'alice', offered_to_me: false, can_run: false, moves_at: 0, done_by: 'alice', done_at: 2000};
         renderCard(makeCard({offer}), makeStore());

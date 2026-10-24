@@ -75,7 +75,7 @@ export type AssistantFeed = {
     on: boolean;
     engine: AssistantEngine;
 
-    // Pinned first, then the newest.
+    // Oldest first, newest last, like a chat; pinned cards keep their place rather than moving to the top.
     cards: AssistantCard[];
 };
 

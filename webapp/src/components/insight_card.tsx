@@ -5,19 +5,27 @@ import React, {useState} from 'react';
 import {useIntl} from 'react-intl';
 
 import {dismissCard, muteCard, pinCard, postCard, type Store} from '../actions';
+import {parseAttachments} from '../attachments';
 import {extractDataPoints} from '../sparkline';
 import {sourceNameFromTool} from '../tool_source';
 import type {AssistantCard} from '../types/assistant';
 
+import AttachmentsCard from './attachments_card';
 import {messages} from './messages';
 import Sparkline from './sparkline';
-import {Button, ButtonRow, Card, CardSummary, CardTitle, Note, Warning} from './styles';
+import {Button, ButtonRow, Card, CardSummary, CardTitle, CardTitleRow, Note, PinMark, Warning} from './styles';
 import WhyRow from './why_row';
 
 // stripDataPointsLine removes a metrics tool's "points: ..." line from the text shown to the person: the
 // sparkline already draws it (see sparkline.ts).
 function stripDataPointsLine(result: string): string {
     return result.replace(/^\s*points:.*$/im, '').replace(/\n{2,}/g, '\n').trim();
+}
+
+// fallbackSummary is today's rendering of a plain-text result (no attachments format, see attachments.ts): its
+// text, minus the sparkline's own "points: ..." line.
+function fallbackSummary(result: string | undefined): string {
+    return result ? stripDataPointsLine(result) : '';
 }
 
 // Footer shows the posted note, the post warning (once "Post to channel" is clicked), or the card's buttons.
@@ -83,14 +91,26 @@ function Footer({card, store}: {card: AssistantCard; store: Store}) {
 }
 
 export default function InsightCard({card, store}: {card: AssistantCard; store: Store}) {
-    const points = extractDataPoints(card.result);
-    const summary = card.result ? stripDataPointsLine(card.result) : '';
+    const {formatMessage} = useIntl();
+    const parsed = parseAttachments(card.result);
+    const points = parsed ? null : extractDataPoints(card.result);
+    const summary = parsed ? parsed.summary : fallbackSummary(card.result);
 
     return (
         <Card>
-            <CardTitle>{card.tool_title}</CardTitle>
+            <CardTitleRow>
+                <CardTitle>{card.tool_title}</CardTitle>
+                {card.pinned && <PinMark>{formatMessage(messages.pinned)}</PinMark>}
+            </CardTitleRow>
             {summary && <CardSummary>{summary}</CardSummary>}
-            {points && <Sparkline points={points}/>}
+            {parsed ? (
+                <AttachmentsCard
+                    attachments={parsed.attachments}
+                    summary={parsed.summary}
+                />
+            ) : (
+                points && <Sparkline points={points}/>
+            )}
             <WhyRow
                 why={card.why}
                 postId={card.post_ids[0]}

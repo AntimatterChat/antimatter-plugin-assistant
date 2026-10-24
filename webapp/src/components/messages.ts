@@ -15,6 +15,11 @@ export const messages = defineMessages({
         description: 'Accessible label of the app rail icon when it has an unread count; {count} is a number, 1 or more.',
     },
 
+    feed: {
+        id: 'assistant.feed',
+        defaultMessage: 'Assistant feed',
+        description: 'Accessible label of the panel\'s scrollable list of cards, oldest first like a chat.',
+    },
     emptyState: {
         id: 'assistant.empty',
         defaultMessage: 'Nothing yet. The assistant shows up here when something in this conversation might help.',
@@ -144,5 +149,23 @@ export const messages = defineMessages({
         id: 'assistant.claim',
         defaultMessage: 'Claim',
         description: 'Button that takes an action offered to nobody.',
+    },
+
+    newCard: {
+        id: 'assistant.new_card',
+        defaultMessage: 'New card ↓',
+        description: 'Button shown at the bottom of the feed when a card arrived while the reader had scrolled ' +
+            'up; clicking it jumps down to the bottom.',
+    },
+    pinned: {
+        id: 'assistant.pinned',
+        defaultMessage: 'Pinned',
+        description: 'Small mark shown on a pinned card: pinned cards stay in their place in the chronological ' +
+            'feed rather than moving to the top, so this is the only way to tell one apart.',
+    },
+    chart: {
+        id: 'assistant.chart',
+        defaultMessage: 'Chart',
+        description: 'Accessible label of a result\'s chart when the tool gave it no label of its own.',
     },
 });

@@ -113,6 +113,35 @@ describe('InsightCard', () => {
         expect(screen.queryByText('Post to channel')).toBeNull();
     });
 
+    it('renders the attachments format, with the summary as the subtitle', () => {
+        const result = JSON.stringify({
+            attachments: [{title: 'CPU on www-1', text: '4.1% now'}],
+            summary: 'CPU on www-1: 4% now, 6% peak in the last hour',
+        });
+        renderCard(makeCard({result}), makeStore());
+
+        expect(screen.getByText('CPU on www-1: 4% now, 6% peak in the last hour')).toBeInTheDocument();
+        expect(screen.getByText('CPU on www-1')).toBeInTheDocument();
+        expect(screen.getByText('4.1% now')).toBeInTheDocument();
+    });
+
+    it('shows no attachments group and keeps the sparkline fallback for plain text', () => {
+        const {container} = renderCard(makeCard({result: 'host: last=61\n  points: 1:10, 2:20, 3:30'}), makeStore());
+
+        expect(container.querySelector('svg polyline')).not.toBeNull();
+        expect(screen.queryByRole('group')).toBeNull();
+    });
+
+    it('shows a pin mark on a pinned card', () => {
+        renderCard(makeCard({pinned: true}), makeStore());
+        expect(screen.getByText('Pinned')).toBeInTheDocument();
+    });
+
+    it('shows no pin mark on a card that is not pinned', () => {
+        renderCard(makeCard({pinned: false}), makeStore());
+        expect(screen.queryByText('Pinned')).toBeNull();
+    });
+
     it('pin, dismiss and mute send the card\'s own id and channel', () => {
         mockedClient.pinAssistantCard.mockResolvedValue(makeCard({pinned: true}));
         mockedClient.dismissAssistantCard.mockResolvedValue(makeCard({status: 'dismissed'}));

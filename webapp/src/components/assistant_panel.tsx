@@ -1,7 +1,7 @@
 // Copyright (c) 2026-present Antimatter contributors.
 // See LICENSE.txt for license information.
 
-import React, {useEffect} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {useIntl} from 'react-intl';
 import {useDispatch, useSelector, useStore} from 'react-redux';
 
@@ -16,7 +16,15 @@ import {getCards, getChannelFeed} from '../selectors';
 import Card from './card';
 import {MutedTools, OnSwitch} from './controls';
 import {messages} from './messages';
-import {Body, Center, Grow, Panel, PanelHeader, Text} from './styles';
+import {Body, Center, Grow, NewCardChip, NewCardChipWrap, Panel, PanelHeader, Text} from './styles';
+
+// A reader within this many pixels of the bottom counts as "at the bottom": new cards stick there instead of
+// showing the jump chip.
+const BOTTOM_THRESHOLD = 24;
+
+function isNearBottom(el: HTMLDivElement): boolean {
+    return el.scrollHeight - el.scrollTop - el.clientHeight <= BOTTOM_THRESHOLD;
+}
 
 // AssistantPanel is the assistant's side panel: the feed of cards for the channel being viewed, the per-channel
 // switch, and the muted tools. It's the only entry point into the assistant besides its rail icon; nothing else in
@@ -28,6 +36,12 @@ export default function AssistantPanel() {
     const channelId = useSelector((state: GlobalState) => getCurrentChannelId(state));
     const channel = useSelector((state: GlobalState) => getChannelFeed(state, channelId));
     const cards = useSelector((state: GlobalState) => getCards(state, channelId));
+
+    const bodyRef = useRef<HTMLDivElement>(null);
+    const wasAtBottomRef = useRef(true);
+    const openedChannelRef = useRef('');
+    const cardCountRef = useRef(0);
+    const [newCardBelow, setNewCardBelow] = useState(false);
 
     useEffect(() => {
         dispatch(panelOpened());
@@ -42,6 +56,63 @@ export default function AssistantPanel() {
     }, [channelId]);
 
     useAssistantPresence(channelId, channel.enabled);
+
+    // Scroll to the bottom once this channel's feed has loaded, whether that's on this panel's first mount or
+    // after switching channels; resets the "is the reader at the bottom" tracking fresh for it.
+    useEffect(() => {
+        if (!channel.loaded || openedChannelRef.current === channelId) {
+            return;
+        }
+        openedChannelRef.current = channelId;
+        cardCountRef.current = cards.length;
+        wasAtBottomRef.current = true;
+        setNewCardBelow(false);
+        const el = bodyRef.current;
+        if (el) {
+            el.scrollTop = el.scrollHeight;
+        }
+    }, [channelId, channel.loaded, cards.length]);
+
+    // A card appended to an already-open feed: stick to the bottom if the reader was already there, otherwise
+    // let them know with the jump chip instead of yanking their scroll position.
+    useEffect(() => {
+        if (openedChannelRef.current !== channelId) {
+            return;
+        }
+        const previousCount = cardCountRef.current;
+        cardCountRef.current = cards.length;
+        if (cards.length <= previousCount) {
+            return;
+        }
+        if (wasAtBottomRef.current) {
+            const el = bodyRef.current;
+            if (el) {
+                el.scrollTop = el.scrollHeight;
+            }
+        } else {
+            setNewCardBelow(true);
+        }
+    }, [channelId, cards.length]);
+
+    const onBodyScroll = () => {
+        const el = bodyRef.current;
+        if (!el) {
+            return;
+        }
+        wasAtBottomRef.current = isNearBottom(el);
+        if (wasAtBottomRef.current) {
+            setNewCardBelow(false);
+        }
+    };
+
+    const jumpToNewCard = () => {
+        const el = bodyRef.current;
+        if (el) {
+            el.scrollTop = el.scrollHeight;
+        }
+        wasAtBottomRef.current = true;
+        setNewCardBelow(false);
+    };
 
     if (!channel.loaded) {
         return (
@@ -74,7 +145,12 @@ export default function AssistantPanel() {
                     />
                 </Grow>
             </PanelHeader>
-            <Body>
+            <Body
+                ref={bodyRef}
+                role='log'
+                aria-label={formatMessage(messages.feed)}
+                onScroll={onBodyScroll}
+            >
                 {channel.on && cards.length === 0 && (
                     <Center>
                         <Text>{formatMessage(messages.emptyState)}</Text>
@@ -89,6 +165,16 @@ export default function AssistantPanel() {
                 ))}
                 <MutedTools store={store}/>
             </Body>
+            {newCardBelow && (
+                <NewCardChipWrap>
+                    <NewCardChip
+                        type='button'
+                        onClick={jumpToNewCard}
+                    >
+                        {formatMessage(messages.newCard)}
+                    </NewCardChip>
+                </NewCardChipWrap>
+            )}
         </Panel>
     );
 }
