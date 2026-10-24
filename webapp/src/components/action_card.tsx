@@ -4,8 +4,7 @@
 import React, {useState} from 'react';
 import {useIntl} from 'react-intl';
 
-import type {Store} from '../actions';
-import {claimCard, dismissCard, muteCard, pinCard, runCard} from '../actions';
+import {claimCard, dismissCard, muteCard, pinCard, runCard, type Store} from '../actions';
 import {useDisplayName} from '../hooks/use_display_name';
 import type {AssistantCard} from '../types/assistant';
 

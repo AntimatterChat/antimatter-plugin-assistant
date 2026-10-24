@@ -21,7 +21,7 @@ export function extractDataPoints(result: string | undefined): number[] | null {
         split(',').
         map((pair) => {
             const value = pair.trim().split(':').pop();
-            return value === undefined ? NaN : parseFloat(value);
+            return typeof value === 'string' ? parseFloat(value) : NaN;
         }).
         filter((value) => Number.isFinite(value));
     return values.length >= 2 ? values : null;

@@ -19,7 +19,7 @@ const loading = new Set<string>();
 // (e.g. the Polls app's voters), fetching the profile once if the host hasn't got it yet. Returns '' until known.
 export function useDisplayName(userId: string): string {
     const dispatch = useDispatch();
-    const profile = useSelector((state: GlobalState) => (userId ? state.entities.users.profiles[userId] : undefined));
+    const profile = useSelector((state: GlobalState) => state.entities.users.profiles[userId]);
     const nameDisplay = useSelector(getTeammateNameDisplaySetting);
 
     useEffect(() => {

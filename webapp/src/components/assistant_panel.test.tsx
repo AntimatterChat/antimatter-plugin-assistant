@@ -1,7 +1,7 @@
 // Copyright (c) 2026-present Antimatter contributors.
 // See LICENSE.txt for license information.
 
-import {render, screen} from '@testing-library/react';
+import {screen} from '@testing-library/react';
 import React from 'react';
 
 import * as client from '../client';

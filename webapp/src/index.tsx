@@ -2,8 +2,7 @@
 // See LICENSE.txt for license information.
 
 import React from 'react';
-import {createIntl} from 'react-intl';
-import type {IntlShape} from 'react-intl';
+import {createIntl, type IntlShape} from 'react-intl';
 
 import {handleCardAdded, handleCardUpdated, handleOfferUpdated} from './actions';
 import AssistantPanel, {PanelTitle} from './components/assistant_panel';

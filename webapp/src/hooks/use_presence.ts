@@ -15,7 +15,7 @@ export function useAssistantPresence(channelId: string, enabled: boolean): void 
 
     useEffect(() => {
         if (!enabled || !channelId) {
-            return undefined;
+            return () => { /* nothing to stop */ };
         }
         const stop = startAssistantPresence(
             channelId,

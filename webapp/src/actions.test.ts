@@ -4,7 +4,6 @@
 import type {AnyAction} from 'redux';
 
 import * as client from './client';
-import type {Store} from './actions';
 import {
     claimCard,
     dismissCard,
@@ -18,6 +17,7 @@ import {
     postCard,
     runCard,
     setChannelOn,
+    type Store,
     unmuteTool,
 } from './actions';
 import manifest from './manifest';

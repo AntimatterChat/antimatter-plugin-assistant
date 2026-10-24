@@ -15,7 +15,7 @@ import {WhyRow as WhyRowButton} from './styles';
 // present, else the first one the model gave.
 function highestProbability(why: AssistantWhy): number | undefined {
     if (!why.probabilities) {
-        return undefined;
+        return why.probabilities;
     }
     if (typeof why.probabilities.card === 'number') {
         return why.probabilities.card;

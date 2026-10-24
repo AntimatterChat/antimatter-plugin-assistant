@@ -7,8 +7,7 @@ import {useSelector} from 'react-redux';
 
 import type {GlobalState} from '@mattermost/types/store';
 
-import type {Store} from '../actions';
-import {loadMutedTools, setChannelOn, unmuteTool} from '../actions';
+import {loadMutedTools, setChannelOn, type Store, unmuteTool} from '../actions';
 import {getMutedTools} from '../selectors';
 
 import {messages} from './messages';
@@ -39,7 +38,6 @@ export function MutedTools({store}: {store: Store}) {
         loadMutedTools(store);
 
         // Loaded once when the controls mount; a mute from a card updates the list locally without refetching.
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (

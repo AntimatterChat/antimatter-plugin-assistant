@@ -9,8 +9,7 @@ import type {GlobalState} from '@mattermost/types/store';
 
 import {getCurrentChannelId} from 'mattermost-redux/selectors/entities/channels';
 
-import type {Store} from '../actions';
-import {loadFeed, panelOpened} from '../actions';
+import {loadFeed, panelOpened, type Store} from '../actions';
 import {useAssistantPresence} from '../hooks/use_presence';
 import {getCards, getChannelFeed} from '../selectors';
 
@@ -40,7 +39,6 @@ export default function AssistantPanel() {
         }
 
         // Reloaded on every channel switch; loadFeed is stable across renders.
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [channelId]);
 
     useAssistantPresence(channelId, channel.enabled);
