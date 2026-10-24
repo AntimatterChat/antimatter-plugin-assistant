@@ -4,6 +4,8 @@
 import {fireEvent, render, screen} from '@testing-library/react';
 import React from 'react';
 import {IntlProvider} from 'react-intl';
+import {Provider} from 'react-redux';
+import {createStore} from 'redux';
 
 import * as client from '../client';
 import type {Store} from '../actions';
@@ -40,17 +42,22 @@ function makeStore(): Store {
     return {dispatch: jest.fn(), getState: jest.fn(() => ({})) as never};
 }
 
+// A plain redux store for the "why" row's HIGHLIGHT_REPLY/SELECT_POST dispatches (see why_row.tsx), which read no
+// state of their own.
 function renderCard(card: AssistantCard, store: Store) {
+    const reduxStore = createStore(() => ({}));
     return render(
-        <IntlProvider
-            locale='en'
-            onError={() => null}
-        >
-            <InsightCard
-                card={card}
-                store={store}
-            />
-        </IntlProvider>,
+        <Provider store={reduxStore}>
+            <IntlProvider
+                locale='en'
+                onError={() => null}
+            >
+                <InsightCard
+                    card={card}
+                    store={store}
+                />
+            </IntlProvider>
+        </Provider>,
     );
 }
 
