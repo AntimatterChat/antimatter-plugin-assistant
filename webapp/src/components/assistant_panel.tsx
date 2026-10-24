@@ -17,7 +17,7 @@ import {getCards, getChannelFeed} from '../selectors';
 import Card from './card';
 import {MutedTools, OnSwitch} from './controls';
 import {messages} from './messages';
-import {Body, Center, Grow, PanelHeader, Text} from './styles';
+import {Body, Center, Grow, Panel, PanelHeader, Text} from './styles';
 
 // AssistantPanel is the assistant's side panel: the feed of cards for the channel being viewed, the per-channel
 // switch, and the muted tools. It's the only entry point into the assistant besides its rail icon; nothing else in
@@ -47,22 +47,26 @@ export default function AssistantPanel() {
 
     if (!channel.loaded) {
         return (
-            <Center>
-                <Text>{formatMessage(messages.loading)}</Text>
-            </Center>
+            <Panel>
+                <Center>
+                    <Text>{formatMessage(messages.loading)}</Text>
+                </Center>
+            </Panel>
         );
     }
 
     if (!channel.enabled) {
         return (
-            <Center>
-                <Text>{formatMessage(messages.off)}</Text>
-            </Center>
+            <Panel>
+                <Center>
+                    <Text>{formatMessage(messages.off)}</Text>
+                </Center>
+            </Panel>
         );
     }
 
     return (
-        <>
+        <Panel>
             <PanelHeader>
                 <Grow>
                     <OnSwitch
@@ -87,7 +91,7 @@ export default function AssistantPanel() {
                 ))}
                 <MutedTools store={store}/>
             </Body>
-        </>
+        </Panel>
     );
 }
 
